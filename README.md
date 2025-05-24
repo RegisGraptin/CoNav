@@ -31,10 +31,18 @@ CoNav is a decentralized, privacy-preserving navigation system offering a secure
 
 ## How to use it
 
+CoNav is composed of multiple components, each folder represents an implementation of it.
 
 ### Smart contract
 
-### OSMR Services
+On the smart contract side, we are leveraging the Secret Network, which allows for private on-chain state through Trusted Execution Environments (TEE). We use this to generate a heat map representing route states. The system mimics the Waze model: the more users on a given route, the denser the traffic. Users can also report incidents like accidents or traffic jams, and this data is stored privately on-chain.
+
+### OSRM Services
+
+For pathfinding between coordinates, we are using [*Project OSRM*](https://project-osrm.org/), an open-source routing engine optimized for road networks. Given two points, OSRM computes the most efficient route, which we integrate with real-time traffic data to provide optimal navigation paths.
+
+> Note: One current limitation is that Project OSRM requires a lot of memory space data to compute pathfinding. Running it on desktop is not an issue but on mobile it is currently challenging. A potential idea could be to have a dedicated server for computing the requested path. However, it breaks privacy as we need to send our coordinate to an external server. 
 
 ### Frontend 
 
+On the frontend side, we are proposing a simple interface allowing us to search a place and compute the best route. We still need to work on the possibility to simulate different actors and events on the network to visualize real-time traffic dynamics and incident impacts.
