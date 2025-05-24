@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Map, { Marker, NavigationControl, Layer, Source } from 'react-map-gl/maplibre';
+import polyline from '@mapbox/polyline';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 export const LiveMap = () => {
@@ -9,20 +10,34 @@ export const LiveMap = () => {
   const [route, setRoute] = useState<[number, number][]>([]);
   const [searchInput, setSearchInput] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Fake destination coordinates (Dublin Spire)
-    const fakeDestination = {
-      lat: 53.3498,
-      lng: -6.2603
+
+    const startingCoordinate = {
+      lat: 53.34937635125938,
+      lng: -6.247825876570049
+    }
+
+    // Fetch the coordinates form the location name
+    const responseLocation = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(searchInput)}.json?key=${process.env.NEXT_PUBLIC_MAPTILER_ACCESS_TOKEN}`);
+    const dataLocation = await responseLocation.json();
+    const targetCoordinate = dataLocation.features[0].center;
+
+    // Use user destination coordinate
+    const targetDestination = {
+      lat: targetCoordinate[1],
+      lng: targetCoordinate[0]
     };
-    setDestination(fakeDestination);
+    setDestination(targetDestination);
     
-    // Create a simple straight line route for demonstration
-    setRoute([
-      [-6.247825876570049, 53.34937635125938], // Starting point
-      [-6.2603, 53.3498] // Destination
-    ]);
+    const url: string = `http://127.0.0.1:5000/route/v1/driving/${startingCoordinate.lng},${startingCoordinate.lat};${targetDestination.lng},${targetDestination.lat}?steps=true`
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const steps = data.routes[0].legs[0].steps;
+    const coords = steps.flatMap(step => polyline.decode(step.geometry).map(([lat, lon]) => [lon, lat]));
+    
+    setRoute(coords);
   };
 
   return (
