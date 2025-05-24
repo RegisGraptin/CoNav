@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Coordinate, EventInfo, PingInfo, TrafficEvent};
+use crate::types::{Coordinate, EventInfo, PingInfo, TrafficEvent, TrafficInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {}
@@ -37,11 +37,8 @@ pub struct TrafficEventResponse {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct TrafficInfoResponse {
-    pub infos: Vec<TrafficEvent>,
+    pub info: TrafficInfo,
 }
-
-
-
 
 // We define a custom struct for each query response
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]

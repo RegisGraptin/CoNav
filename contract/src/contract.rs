@@ -4,7 +4,7 @@ use cosmwasm_std::{
 
 use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg, TrafficEventResponse, TrafficInfoResponse};
 use crate::state::{config_read, State, ROAD_SEGMENTS, ROAD_SEGMENT_EVENTS, USER_PINGS, USER_PINGS_KEY};
-use crate::types::{Coordinate, EventInfo, PingInfo, TrafficEvent};
+use crate::types::{Coordinate, EventInfo, PingInfo, TrafficEvent, TrafficInfo};
 
 #[entry_point]
 pub fn instantiate(
@@ -103,7 +103,7 @@ pub fn try_share_event(
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::GetTrafficEvent { coordinate } => to_binary(&query_traffic_event(deps, env, coordinate)?),
-        QueryMsg::GetTrafficInfo { coordinate } => to_binary(&query_traffic_info(deps, coordinate)?),
+        QueryMsg::GetTrafficInfo { coordinate } => to_binary(&query_traffic_info(deps, env, coordinate)?),
     }
 }
 
@@ -127,16 +127,38 @@ fn query_traffic_event(
     Ok(TrafficEventResponse { events: events })
 }
 
-fn query_traffic_info(deps: Deps, coordinate: Coordinate) -> StdResult<TrafficInfoResponse> {
+fn query_traffic_info(
+    deps: Deps, 
+    env: Env, 
+    coordinate: Coordinate
+) -> StdResult<TrafficInfoResponse> {
 
-    Ok(TrafficInfoResponse { events: vec![] }) // FIXME:
+    let tile_id = coordinate.tile_id();
+
+    // Fetch the road segment information
+    let mut infos = ROAD_SEGMENTS
+        .get(deps.storage, &tile_id)
+        .unwrap_or_else(|| Vec::new());
+
+    // Filter on the last one
+    let now = env.block.time.seconds();
+    let max_age = 60 * 30; // e.g., keep last 30 minutes
+
+    infos.retain(|info| now - info.timestamp <= max_age);
+    
+    // Compute the data
+    let count: u32 = infos.len() as u32;
+    let total_speed: u32 = infos.iter().map(|info| info.speed).sum();
+    let avg_speed = total_speed / count;
+
+    Ok(TrafficInfoResponse { 
+        info: TrafficInfo {
+            count, 
+            avg_speed
+        }
+    })
 }
 
-
-fn query_count(deps: Deps) -> StdResult<CountResponse> {
-    let state = config_read(deps.storage).load()?;
-    Ok(CountResponse { count: 0 })
-}
 
 // #[cfg(test)]
 // mod tests {

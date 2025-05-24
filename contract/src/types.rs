@@ -31,6 +31,12 @@ pub struct PingInfo {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
+pub struct TrafficInfo {
+    pub count: u32,
+    pub avg_speed: u32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct EventInfo {
     pub event_type: TrafficEvent,
     pub timestamps: u64,
