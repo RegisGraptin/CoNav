@@ -1,16 +1,27 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+use crate::types::{Coordinate, PingInfo, TrafficEvent};
+
+
+
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
-pub struct InstantiateMsg {
-    pub count: i32,
-}
+pub struct InstantiateMsg {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
-    Increment {},
-    Reset { count: i32 },
+
+    Ping { 
+        info: PingInfo,
+    },
+    ShareEvent { 
+        event_type: TrafficEvent,
+        coordinate: Coordinate,
+        timestamps: u64,
+    },
+
+    // TODO: add an event to compute best path
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
