@@ -3,14 +3,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/RegisGraptin/decentralized-waze">
+  <a href="https://github.com/RegisGraptin/CoNav">
     <img src="./logo.jpeg" alt="Logo" width="250" height="250">
   </a>
 
 <h3 align="center">CoNav - A Decentralized, Privacy-Preserving Alternative to Waze</h3>
 <p align="center" style="font-style: italic; font-size: 1.2em;">Built during ETH Dublin 2025</p>
   <p align="center">
-    <a href="https://github.com/RegisGraptin/decentralized-waze">Code</a>
+    <a href="https://github.com/RegisGraptin/CoNav">Code</a>
     &middot;
     <a href="#">View Demo</a>
     &middot;
@@ -31,4 +31,10 @@ CoNav is a decentralized, privacy-preserving navigation system offering a secure
 
 ## How to use it
 
+
+### Smart contract
+
+### OSMR Services
+
+### Frontend 
 
