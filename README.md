@@ -21,3 +21,14 @@
 
 
 ## About The Project
+
+**Would you willingly share your real-time location with a stranger?**
+Probably not. Yet every day, millions of drivers do just that—unknowingly—by using centralized navigation services like Waze. These platforms collect and control your location data, often with little transparency on how it's used or shared.
+
+Blockchain and especially smart contracts have enabled the possibility to establish stricts and clear rules on data usage without relying on a central authority. More importantly, the emergence of privacy-focused blockchains introduces the possibility of computing over encrypted data, allowing decentralize coordination without surveillance.
+
+CoNav is a decentralized, privacy-preserving navigation system offering a secure alternative to Waze. It empowers users to contribute to real-time traffic coordination without giving up control over their personal data. Built on Secret Network, a blockchain that leverages Trusted Execution Environments (TEEs) to process encrypted geolocation data, user locations remain protected and never get exposed to third parties.
+
+## How to use it
+
+
