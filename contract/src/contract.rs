@@ -2,9 +2,9 @@ use cosmwasm_std::{
     entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult,
 };
 
-use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::state::{config, config_read, State, ROAD_SEGMENTS, USER_PINGS, USER_PINGS_KEY};
-use crate::types::{Coordinate, PingInfo, TrafficEvent};
+use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg, TrafficEventResponse, TrafficInfoResponse};
+use crate::state::{config_read, State, ROAD_SEGMENTS, ROAD_SEGMENT_EVENTS, USER_PINGS, USER_PINGS_KEY};
+use crate::types::{Coordinate, EventInfo, PingInfo, TrafficEvent};
 
 #[entry_point]
 pub fn instantiate(
@@ -31,10 +31,9 @@ pub fn execute(deps: DepsMut, env: Env, msg_info: MessageInfo, msg: ExecuteMsg) 
             info: user_info 
         } => try_ping(deps, msg_info, env, user_info),
         ExecuteMsg::ShareEvent {
-            event_type,
             coordinate,
-            timestamps
-         } => try_share_event(deps, msg_info, env, event_type, coordinate, timestamps)
+            event
+        } => try_share_event(deps, msg_info, env, coordinate, event)
     }
 }
 
@@ -66,7 +65,7 @@ pub fn try_ping(
         .unwrap_or_else(|| Vec::new());
 
     let now = env.block.time.seconds();
-    let max_age = 60; // e.g., keep last 60 seconds
+    let max_age = 60 * 30; // e.g., keep last 30 minutes
 
     segment_pings.retain(|ping| now - ping.timestamp <= max_age);
     segment_pings.push(user_info.clone());
@@ -79,11 +78,19 @@ pub fn try_share_event(
     deps: DepsMut, 
     msg_info: MessageInfo, 
     env: Env, 
-    event_type: TrafficEvent,
     coordinate: Coordinate,
-    timestamps: u64,
+    event: EventInfo,
 ) -> StdResult<Response> {
+
+    let tile_id = coordinate.tile_id();
         
+    let mut events = ROAD_SEGMENT_EVENTS
+        .get(deps.storage, &tile_id)
+        .unwrap_or_else(|| Vec::new());
+
+    // Add the new one & save it
+    events.push(event.clone());
+    ROAD_SEGMENT_EVENTS.insert(deps.storage, &tile_id, &events)?;
     
     Ok(Response::default())
 }
@@ -93,11 +100,38 @@ pub fn try_share_event(
 
 
 #[entry_point]
-pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
+pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::GetCount {} => to_binary(&query_count(deps)?),
+        QueryMsg::GetTrafficEvent { coordinate } => to_binary(&query_traffic_event(deps, env, coordinate)?),
+        QueryMsg::GetTrafficInfo { coordinate } => to_binary(&query_traffic_info(deps, coordinate)?),
     }
 }
+
+fn query_traffic_event(
+    deps: Deps, 
+    env: Env, 
+    coordinate: Coordinate
+) -> StdResult<TrafficEventResponse> {
+
+    let tile_id = coordinate.tile_id();
+    
+    let mut events = ROAD_SEGMENT_EVENTS
+        .get(deps.storage, &tile_id)
+        .unwrap_or_else(|| Vec::new());
+
+    let now = env.block.time.seconds();
+    let max_age = 60 * 30; // e.g., keep last 30 minutes
+
+    events.retain(|event| now - event.timestamps <= max_age);
+    
+    Ok(TrafficEventResponse { events: events })
+}
+
+fn query_traffic_info(deps: Deps, coordinate: Coordinate) -> StdResult<TrafficInfoResponse> {
+
+    Ok(TrafficInfoResponse { events: vec![] }) // FIXME:
+}
+
 
 fn query_count(deps: Deps) -> StdResult<CountResponse> {
     let state = config_read(deps.storage).load()?;

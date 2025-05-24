@@ -30,6 +30,11 @@ pub struct PingInfo {
     pub coordinate: Coordinate,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
+pub struct EventInfo {
+    pub event_type: TrafficEvent,
+    pub timestamps: u64,
+}
 
 impl Coordinate {
     pub fn tile_id(&self) -> u32 {

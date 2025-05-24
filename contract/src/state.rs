@@ -6,11 +6,12 @@ use cosmwasm_storage::{singleton, singleton_read, ReadonlySingleton, Singleton};
 
 use secret_toolkit::storage::{Keymap};
 
-use crate::types::PingInfo;
+use crate::types::{EventInfo, PingInfo};
 
 pub static CONFIG_KEY: &[u8] = b"config";
 pub static USER_PINGS_KEY: &[u8] = b"user_pings";
 pub static ROAD_SEGMENTS_KEY: &[u8] = b"road_segments";
+pub static ROAD_SEGMENT_EVENTS_KEY: &[u8] = b"road_segment_events";
 
 pub static USER_PINGS: Keymap<Addr, Vec<PingInfo>> = Keymap::new(USER_PINGS_KEY);
 
@@ -18,6 +19,9 @@ pub static USER_PINGS: Keymap<Addr, Vec<PingInfo>> = Keymap::new(USER_PINGS_KEY)
 // Each tile will have a list of previous ping information allowing us to measure
 // and compute traffic information
 pub static ROAD_SEGMENTS: Keymap<u32, Vec<PingInfo>> = Keymap::new(ROAD_SEGMENTS_KEY);
+
+// Store road events happening
+pub static ROAD_SEGMENT_EVENTS: Keymap<u32, Vec<EventInfo>> = Keymap::new(ROAD_SEGMENT_EVENTS_KEY);
 
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
