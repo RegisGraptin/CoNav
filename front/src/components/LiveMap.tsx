@@ -1,5 +1,9 @@
+"use client";
+
 import { useEffect, useState } from 'react';
-import {Map, Marker} from 'react-map-gl';
+
+import Map, { Marker } from 'react-map-gl/maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface UserPosition {
   address: number
@@ -30,14 +34,17 @@ export const LiveMap = () => {
 
   return (
     <Map
-      mapboxAccessToken="MAPBOX_TOKEN"
-      initialViewState={{ latitude: 40.7, longitude: -74, zoom: 10 }}
+      initialViewState={{
+        longitude: -6.247825876570049,
+        latitude: 53.34937635125938,
+        zoom: 14
+      }}
+      style={{width: 600, height: 400}}
+      mapStyle={`https://api.maptiler.com/maps/streets/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_ACCESS_TOKEN}`}
     >
-      {users.map(user => (
-        <Marker key={user.address} latitude={user.lat} longitude={user.lng}>
-          <div className="user-marker">🚗</div>
-        </Marker>
-      ))}
-    </Map>
+         <Marker latitude={53.34937635125938} longitude={-6.247825876570049}>
+           <div className="user-marker">🚗</div>
+         </Marker>
+      </Map>
   );
 };
