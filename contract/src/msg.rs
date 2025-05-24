@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Coordinate, EventInfo, PingInfo, TrafficEvent, TrafficInfo};
+use crate::types::{Coordinate, EventInfo, PingInfo, TrafficInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {}
