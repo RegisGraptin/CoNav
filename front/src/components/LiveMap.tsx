@@ -36,7 +36,7 @@ export const LiveMap = () => {
           placeholder="Enter destination..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="flex-1 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 p-3 rounded-lg border border-gray-300 text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
           type="submit"
@@ -120,7 +120,7 @@ export const LiveMap = () => {
       {/* ETA Box */}
       {destination && (
         <div className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="font-semibold text-lg">Estimated arrival</h3>
+          <h3 className="font-semibold text-lg text-gray-600">Estimated arrival</h3>
           <p className="text-2xl font-bold text-blue-600">15 min</p>
           <p className="text-sm text-gray-500">8.2 km via fake route</p>
         </div>
