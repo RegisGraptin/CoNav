@@ -14,7 +14,7 @@
     &middot;
     <a href="#">View Demo</a>
     &middot;
-    <a href="#">Video Presentation</a>
+    <a href="https://www.loom.com/share/d180caede88d4a47b0086c68b5edfba9?sid=9f7e31f6-ed1f-41f0-9d45-de4096591718">Video Presentation</a>
     
   </p>
 </div>
